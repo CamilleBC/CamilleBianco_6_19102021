@@ -31,5 +31,11 @@ app.use((req, res, next) => {
 //Transformer le corps de la requête POST en objet javascript
 app.use(express.json())
 
+//Importer le routeur User
+const userRoutes = require('./routes/user')
+
+//Créer le point d'accès de userRoute
+app.use('/api/auth', userRoutes)
+
 //Exporter l'application
 module.exports = app;
