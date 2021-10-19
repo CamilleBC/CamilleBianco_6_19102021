@@ -1,7 +1,5 @@
 //Importer express 
 const express = require('express');
-//Importer body-parser
-const bodyParser = require('body-parser');
 //Importer mongoose
 const mongoose = require('mongoose');
 
@@ -18,6 +16,20 @@ useUnifiedTopology : true})
 
 //Créer l'application express
 const app = express(); 
+
+//Paramètrer les accès de notre API
+app.use((req, res, next) => {
+    //Permission pour tout origine
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    //Permission pour certains entêtes
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    //Permission pour certaines méthodes 
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next();
+  });
+
+//Transformer le corps de la requête POST en objet javascript
+app.use(express.json())
 
 //Exporter l'application
 module.exports = app;
