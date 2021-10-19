@@ -31,4 +31,40 @@ exports.signup = (req, res, next)=>{
         .catch(function(error){
             res.status(500).json({error})
         })
+}; 
+
+exports.login = (req, res, next)=>{
+    //Trouver l'utilisateur
+    User.findOne({
+        email: req.body.email
+    })
+        .then(function(user){
+            //Si l'utilisateur n'a pas été trouvé
+            if(!user){
+                return res.status(401).json({message: 'Utilisateur non trouvé.'})
+            }
+            //Comparer le mdp avec celui dans le BDD
+            bcrypt.compare(req.body.password, user.password)
+                .then(function(valid){
+                    //Si le mdp n'est pas valide
+                    if(!valid){
+                        res.status(400).json({message: 'Mot de passe incorrecte.'})
+                    }
+                    //Si le mdp est valide
+                    res.status(200).json({
+                        userId : user._id,
+                        token : jwt.sign(
+                            {userId : user._id},
+                            'RANDOM_SECRET_TOKEN',
+                            {expiresIn : '24h'}
+                        )
+                    })
+                })
+                .catch(function(error){
+                    res.status(500).json({error})
+                })
+        })
+        .catch(function(error){
+            res.status(500).json({error})
+        })
 }
