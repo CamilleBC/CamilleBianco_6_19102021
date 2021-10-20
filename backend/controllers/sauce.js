@@ -48,3 +48,25 @@ exports.getOneSauce = (req, res, next)=>{
         })
 }
 
+//Supprimer une sauce
+exports.deleteSauce = (req, res, next )=>{
+    Sauce.findOne({_id : req.params.id})
+        .then(function(sauce){
+            //Récupérer le nom du fichier
+            const filename = sauce.imageUrl.split('/images/')[1]
+            //Supprimer un fichier et la sauce
+            fs.unlink(`images/${filename}`, () =>{
+                //Supprimer la sauce sélectionnée
+                Sauce.deleteOne({_id : req.params.id })
+                    .then(function(){
+                        res.status(200).json({message : 'Sauce supprimée.'})
+                    })
+                    .catch(function(error){
+                        res.status(500).json({error})
+                    })
+            })
+        })
+        .catch(function(error){
+            res.status(500).json({error})
+        })
+}

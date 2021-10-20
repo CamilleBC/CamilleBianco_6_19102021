@@ -28,17 +28,21 @@ app.use((req, res, next) => {
     next();
   });
 
-
-
-//Importer le routeur User
-const userRoutes = require('./routes/user')
-//Importer le routeur Sauce
-const sauceRoutes = require('./routes/sauce');
+//Importer body-parser
 const bodyParser = require('body-parser');
 
 //Transformer le corps de la requête POST en objet javascript
 app.use(bodyParser.json())
 
+//Importer le routeur User
+const userRoutes = require('./routes/user')
+//Importer le routeur Sauce
+const sauceRoutes = require('./routes/sauce');
+//Importer le chemin du système de fichier
+const path = require('path')
+
+//Indiquer comment traiter les requêtes sur /images
+app.use('/images', express.static(path.join(__dirname, 'images')));
 //Créer le point d'accès de userRoute
 app.use('/api/auth', userRoutes)
 //Créer le point d'accès de userRoute
