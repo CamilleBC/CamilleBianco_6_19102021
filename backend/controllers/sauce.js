@@ -89,3 +89,89 @@ exports.deleteSauce = (req, res, next )=>{
             res.status(500).json({error})
         })
 }
+
+//Gérer les likes et dislikes
+exports.updateLike = (req, res, next) =>{
+    const like = req.body.like;
+    const user = req.body.userId;
+    const id = req.params.id;
+
+    //Si le bouton like est cliqué
+    if(like === 1){
+        //Mise a jour de la sauce
+        Sauce.updateOne(
+            {_id : id },
+            //Incrémentation du like et du user dans le tableau userLiked
+            {
+                $inc : {likes : +1}, 
+                $push: {usersLiked : user}
+            }
+        )
+            .then(function(){
+                res.status(200).json({message : 'Like ajouté.'})
+            })
+            .catch(function(error){
+                res.status(400).json({error})
+            })
+    }
+
+    //Si le bouton dislike est cliqué
+    if(like === -1){
+        Sauce.updateOne(
+            {_id : id },
+             //Incrémentation du dislike et du user dans le tableau userDisliked
+            {
+                $inc : {dislikes : +1}, 
+                $push: {usersDisliked : user}
+            }
+        )
+        .then(function(){
+            res.status(200).json({message : 'Dislike ajouté.'})
+        })
+        .catch(function(error){
+            res.status(400).json({error})
+        })
+    }
+
+    //Si le bouton like ou dislike est annulé
+    if (like === 0){
+        //On retrouve la sauce
+        Sauce.findOne({_id : id})
+        .then(function(sauce){
+            //Si le user retire un like
+            if (sauce.usersLiked.includes(user)){
+                Sauce.updateOne(
+                    {_id : id},
+                    //Décrémentation du like et du user dans le tableau userLiked
+                    {
+                        $inc : { likes : -1},
+                        $pull : {usersLiked : user}
+                    }
+                )
+                .then(function(){
+                    res.status(200).json({message : 'Like retiré.'})
+                })
+                .catch(function(error){
+                    res.status(400).json({error})
+                })
+            }
+            //Si le user retire un dislike
+            if (sauce.usersDisliked.includes(user)){
+                Sauce.updateOne(
+                    {_id : id},
+                    //Décrémentation du dislike et du user dans le tableau userDisliked
+                    {
+                        $inc : {dislikes : -1},
+                        $pull : {usersDisliked : user}
+                    }
+                )
+                .then(function(){
+                    res.status(200).json({message : 'Dislike retiré'})
+                })
+                .catch(function(){
+                    res.status(400).json({error})
+                })
+            }
+        })
+    }
+}
