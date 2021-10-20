@@ -52,8 +52,36 @@ exports.getOneSauce = (req, res, next)=>{
 exports.modifySauce = (req, res, next)=>{
     //Savoir si il y a une nouvelle image
     const sauceObject = req.file ?
+    //Si nouvelleImage = true
+    (
+        //On retrouve l'ancienne image que l'on supprime
+        Sauce.findOne({_id : req.params.id})
+            .then(function(sauce){
+                const filename = sauce.imageUrl.split('/images/')[1]
+                fs.unlinkSync(`images/${filename}`)
+            })
+            .catch(function(error){
+                res.status(400).json({error})
+            }),
+        //On transorme sous forme d'objet notre requête et on reprends le nouvel URL de l'image
+        {...JSON.parse(req.body.sauce),
+        imageUrl : `${req.protocol}://${req.get('host')}/images/${req.file.filename}`}
+    ) : 
+    //Si nouvelleImage = false
+    (
+        //On reprends simplement la requête tel quel
+        {...req.body}
+    );
+    Sauce.updateOne({_id: req.params.id}, {...sauceObject, _id : req.params.id})
+    .then (function(){
+        res.status(200).json({message : 'Sauce modifié.'})
+    })
+    .catch (function(error){
+        res.status(400).json({error})
+    })
+    
     //Si req.file existe (condition true)
-    {...JSON.parse(req.body.sauce),
+    /*{...JSON.parse(req.body.sauce),
     imageUrl : `${req.protocol}://${req.get('host')}/images/${req.file.filename}`} :
     //Si req.file n'existe pas (condition false)
     {...req.body}
@@ -64,7 +92,7 @@ exports.modifySauce = (req, res, next)=>{
         })
         .catch (function(error){
             res.status(400).json({error})
-        })
+        })*/
 }
 
 //Supprimer une sauce
