@@ -28,14 +28,21 @@ app.use((req, res, next) => {
     next();
   });
 
-//Transformer le corps de la requête POST en objet javascript
-app.use(express.json())
+
 
 //Importer le routeur User
 const userRoutes = require('./routes/user')
+//Importer le routeur Sauce
+const sauceRoutes = require('./routes/sauce');
+const bodyParser = require('body-parser');
+
+//Transformer le corps de la requête POST en objet javascript
+app.use(bodyParser.json())
 
 //Créer le point d'accès de userRoute
 app.use('/api/auth', userRoutes)
+//Créer le point d'accès de userRoute
+app.use('/api/sauces', sauceRoutes)
 
 //Exporter l'application
 module.exports = app;
