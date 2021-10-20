@@ -48,6 +48,25 @@ exports.getOneSauce = (req, res, next)=>{
         })
 }
 
+//Modifier une sauce
+exports.modifySauce = (req, res, next)=>{
+    //Savoir si il y a une nouvelle image
+    const sauceObject = req.file ?
+    //Si req.file existe (condition true)
+    {...JSON.parse(req.body.sauce),
+    imageUrl : `${req.protocol}://${req.get('host')}/images/${req.file.filename}`} :
+    //Si req.file n'existe pas (condition false)
+    {...req.body}
+    //Mettre à jour l'objet
+    Sauce.updateOne({_id: req.params.id}, {...sauceObject, _id : req.params.id})
+        .then (function(){
+            res.status(200).json({message : 'Sauce modifié.'})
+        })
+        .catch (function(error){
+            res.status(400).json({error})
+        })
+}
+
 //Supprimer une sauce
 exports.deleteSauce = (req, res, next )=>{
     Sauce.findOne({_id : req.params.id})

@@ -13,10 +13,11 @@ const auth = require('../middleware/auth')
 const sauceCtrl = require('../controllers/sauce');
 
 
-routeur.get('/', sauceCtrl.getAllSauces);
-routeur.post('/', multer, sauceCtrl.createSauce);
-routeur.get('/:id', sauceCtrl.getOneSauce);
-routeur.delete('/:id', sauceCtrl.deleteSauce)
+routeur.get('/', auth, sauceCtrl.getAllSauces);
+routeur.post('/', auth, multer, sauceCtrl.createSauce);
+routeur.get('/:id', auth, sauceCtrl.getOneSauce);
+routeur.put('/:id', auth, multer, sauceCtrl.modifySauce );
+routeur.delete('/:id', auth, sauceCtrl.deleteSauce)
 
 
 module.exports = routeur;
