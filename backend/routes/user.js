@@ -1,8 +1,9 @@
 //Importer express
 const express = require('express');
-const { verify } = require('jsonwebtoken');
+
 //Créer le routeur
 const routeur = express.Router();
+
 //Importer le fichier controller
 const userCtrl = require('../controllers/user');
 //Importer le middleware verifyPassword

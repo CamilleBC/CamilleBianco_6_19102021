@@ -11,7 +11,7 @@ module.exports = (req, res, next)=>{
         const userId = decodedToken.userId
         //Si le userId existe mais ne correspond pas
         if(req.body.userId && req.body.userId ==! userId){
-            throw 'User ID non valable'
+            throw 'User ID non valable';
         }
         //Sinon passer a l'étape suivante
         else{
@@ -19,6 +19,6 @@ module.exports = (req, res, next)=>{
         }
     }
     catch(error){
-        res.status(401).json({error: error | 'Requête non authentifiée !'})
+        res.status(403).json({error: error | 'Requête non authentifiée.'})
     }
 }
