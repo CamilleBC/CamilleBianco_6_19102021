@@ -6,9 +6,8 @@ module.exports = (req, res, next) =>{
         res.writeHead(404, 
             {message : 'Le mot de passe doit contenir : 8 caractères sans espaces avec au minimum 1 majuscule, 1 minuscule, 1 symboles.'}, )
         res.end('Format de mot de passe incorrecte');
-
     }
-    else{
+    else {
         next();
     }
 };

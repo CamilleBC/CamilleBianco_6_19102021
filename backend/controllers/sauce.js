@@ -16,9 +16,11 @@ exports.getAllSauces = (req, res, next)=>{
 
 //Créer fonction création d'une sauce
 exports.createSauce = (req, res, next)=>{
+    //Récupèrer la requête sauce que l'on mets sous forme d'objet
     const sauceObject = JSON.parse(req.body.sauce);
     delete sauceObject._id;
     
+    //Créer la sauce grâce au modèle Sauce avec les informations récupérer
     const sauce = new Sauce({
         ...sauceObject,
         likes: 0,
